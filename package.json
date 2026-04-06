@@ -19,7 +19,13 @@
     "web-vitals": "^2.1.4"
   },
   "resolutions": {
-    "webpack": "4.44.2"
+    "webpack": "4.44.2",
+    "ajv": "^6.12.6",
+    "ajv-keywords": "^3.5.2"
+  },
+  "overrides": {
+    "ajv": "^6.12.6",
+    "ajv-keywords": "^3.5.2"
   },
   "scripts": {
     "start": "SKIP_PREFLIGHT_CHECK=true react-scripts start",
