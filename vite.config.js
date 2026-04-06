@@ -22,10 +22,7 @@ export default defineConfig({
     hmr: {
       clientPort: 3000
     },
-    allowedHosts: [
-      '.csb.app',
-      'localhost'
-    ]
+    allowedHosts: 'all'
   },
   build: {
     outDir: 'build'
