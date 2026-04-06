@@ -22,9 +22,8 @@ node_modules/
 # ===========================
 # Environment variables
 # ===========================
-# .env (keep for CodeSandbox)
+# .env and .env.development (keep for CodeSandbox)
 .env.local
-.env.development.local
 .env.test.local
 .env.production.local
 .env.*.local
