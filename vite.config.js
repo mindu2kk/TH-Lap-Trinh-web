@@ -17,12 +17,11 @@ export default defineConfig({
   },
   server: {
     port: 3000,
-    host: '0.0.0.0',
+    host: true,
     strictPort: false,
     hmr: {
       clientPort: 3000
-    },
-    allowedHosts: 'all'
+    }
   },
   build: {
     outDir: 'build'
