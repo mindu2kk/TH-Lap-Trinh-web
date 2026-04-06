@@ -85,6 +85,7 @@ app.get("/photosOfUser/:id", (req, res) => {
 });
 
 const PORT = 3001;
-app.listen(PORT, () =>
-  console.log(`API server running at http://localhost:${PORT}`)
+const HOST = '0.0.0.0';
+app.listen(PORT, HOST, () =>
+  console.log(`API server running at http://${HOST}:${PORT}`)
 );

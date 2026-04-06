@@ -13,6 +13,14 @@
       "preview": {
         "port": 3000
       }
+    },
+    "server": {
+      "name": "Start API Server",
+      "command": "npm run server",
+      "runAtStart": true,
+      "preview": {
+        "port": 3001
+      }
     }
   }
 }
