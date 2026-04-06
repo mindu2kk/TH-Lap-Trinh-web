@@ -3,10 +3,29 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
+  esbuild: {
+    loader: 'jsx',
+    include: /src\/.*\.jsx?$/,
+    exclude: []
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+      loader: {
+        '.js': 'jsx'
+      }
+    }
+  },
   server: {
     port: 3000,
-    host: true,
-    strictPort: false
+    host: '0.0.0.0',
+    strictPort: false,
+    hmr: {
+      clientPort: 3000
+    },
+    allowedHosts: [
+      '.csb.app',
+      'localhost'
+    ]
   },
   build: {
     outDir: 'build'
