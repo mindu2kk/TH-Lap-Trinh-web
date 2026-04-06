@@ -2,12 +2,12 @@
   "setupTasks": [
     {
       "name": "Install Dependencies",
-      "command": "npm install"
+      "command": "npm install --legacy-peer-deps"
     }
   ],
   "tasks": {
     "dev": {
-      "name": "Development Server",
+      "name": "Start Dev Server",
       "command": "npm start",
       "runAtStart": true,
       "preview": {

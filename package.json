@@ -22,7 +22,8 @@
     "webpack": "4.44.2"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "SKIP_PREFLIGHT_CHECK=true react-scripts start",
+    "start:debug": "BROWSER=none SKIP_PREFLIGHT_CHECK=true react-scripts start",
     "server": "node server.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
