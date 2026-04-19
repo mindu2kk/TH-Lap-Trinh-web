@@ -18,11 +18,11 @@ import "./styles.css";
  */
 function TopBar({ context, advancedFeatures, onToggleAdvanced }) {
   return (
-    <AppBar className="topbar-appBar" position="absolute">
+    <AppBar className="topbar-appBar" position="fixed">
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
         {/* Left side: your name */}
         <Typography variant="h5" color="inherit">
-          Your Name
+          Minh
         </Typography>
 
         {/* Right side: context + advanced features checkbox */}

@@ -8,6 +8,7 @@ import TopBar from "./components/TopBar";
 import UserDetail from "./components/UserDetail";
 import UserList from "./components/UserList";
 import UserPhotos from "./components/UserPhotos";
+import UserComments from "./components/UserComments";
 
 const App = () => {
   const [context, setContext] = useState("");
@@ -15,16 +16,13 @@ const App = () => {
 
   return (
     <Router>
-      <div>
+      <TopBar
+        context={context}
+        advancedFeatures={advancedFeatures}
+        onToggleAdvanced={() => setAdvancedFeatures((prev) => !prev)}
+      />
+      <div className="main-topbar-buffer">
         <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <TopBar
-              context={context}
-              advancedFeatures={advancedFeatures}
-              onToggleAdvanced={() => setAdvancedFeatures((prev) => !prev)}
-            />
-          </Grid>
-          <div className="main-topbar-buffer" />
           <Grid item sm={3}>
             <Paper className="main-grid-item">
               <UserList />
@@ -56,6 +54,10 @@ const App = () => {
                   }
                 />
                 <Route path="/users" element={<UserList />} />
+                <Route
+                  path="/comments/:userId"
+                  element={<UserComments setContext={setContext} />}
+                />
               </Routes>
             </Paper>
           </Grid>

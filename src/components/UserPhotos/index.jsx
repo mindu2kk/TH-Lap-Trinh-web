@@ -9,17 +9,16 @@ import {
   Button,
   Box,
   Paper,
+  Chip,
 } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import { useParams, useNavigate, Link } from "react-router-dom";
 
 import "./styles.css";
 import fetchModel from "../../lib/fetchModelData";
 
-/**
- * Format an ISO date string into a readable format.
- */
 function formatDate(dateStr) {
   return new Date(dateStr).toLocaleString("en-US", {
     year: "numeric",
@@ -30,13 +29,6 @@ function formatDate(dateStr) {
   });
 }
 
-/**
- * UserPhotos - Displays photos for a given user.
- *
- * Normal mode:   Shows all photos with their comments.
- * Advanced mode: Shows one photo at a time with prev/next stepper.
- *                URL is deep-linkable: /photos/:userId/stepper/:photoIndex
- */
 function UserPhotos({ setContext, advancedFeatures }) {
   const { userId, photoIndex } = useParams();
   const navigate = useNavigate();
@@ -44,8 +36,7 @@ function UserPhotos({ setContext, advancedFeatures }) {
   const [userName, setUserName] = useState("");
   const [loading, setLoading] = useState(true);
 
-  const currentIndex =
-    photoIndex !== undefined ? parseInt(photoIndex, 10) : 0;
+  const currentIndex = photoIndex !== undefined ? parseInt(photoIndex, 10) : 0;
 
   useEffect(() => {
     let cancelled = false;
@@ -67,20 +58,15 @@ function UserPhotos({ setContext, advancedFeatures }) {
         console.error("UserPhotos fetch error:", err);
         setLoading(false);
       });
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [userId, setContext]);
 
   if (loading) return <CircularProgress sx={{ m: 2 }} />;
   if (!photos.length)
-    return (
-      <Typography sx={{ m: 2 }}>No photos found for this user.</Typography>
-    );
+    return <Typography sx={{ m: 2 }}>No photos found for this user.</Typography>;
 
   // ---- Advanced mode: single photo stepper ----
   if (advancedFeatures) {
-    // Redirect /photos/:userId to /photos/:userId/stepper/0 for deep-link consistency
     if (photoIndex === undefined) {
       navigate(`/photos/${userId}/stepper/0`, { replace: true });
       return null;
@@ -89,48 +75,48 @@ function UserPhotos({ setContext, advancedFeatures }) {
     const photo = photos[safeIndex];
 
     return (
-      <Box sx={{ p: 1 }}>
-        <Typography variant="h6" gutterBottom>
-          Photos of {userName}
-        </Typography>
-        <Typography variant="body2" color="text.secondary" gutterBottom>
-          Photo {safeIndex + 1} of {photos.length}
-        </Typography>
+      <Box sx={{ p: 2 }}>
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2 }}>
+          <Typography variant="h6" fontWeight="bold">
+            Photos of {userName}
+          </Typography>
+          <Chip label={`${safeIndex + 1} / ${photos.length}`} size="small" color="primary" />
+        </Box>
 
-        <PhotoCard photo={photo} />
-
-        <Box sx={{ display: "flex", gap: 2, mt: 1 }}>
+        {/* Stepper controls on top */}
+        <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
           <Button
-            variant="outlined"
+            variant="contained"
             startIcon={<ArrowBackIosNewIcon />}
             disabled={safeIndex === 0}
-            onClick={() =>
-              navigate(`/photos/${userId}/stepper/${safeIndex - 1}`)
-            }
+            onClick={() => navigate(`/photos/${userId}/stepper/${safeIndex - 1}`)}
+            size="small"
           >
             Previous
           </Button>
           <Button
-            variant="outlined"
+            variant="contained"
             endIcon={<ArrowForwardIosIcon />}
             disabled={safeIndex === photos.length - 1}
-            onClick={() =>
-              navigate(`/photos/${userId}/stepper/${safeIndex + 1}`)
-            }
+            onClick={() => navigate(`/photos/${userId}/stepper/${safeIndex + 1}`)}
+            size="small"
           >
             Next
           </Button>
         </Box>
+
+        <PhotoCard photo={photo} />
       </Box>
     );
   }
 
   // ---- Normal mode: all photos ----
   return (
-    <Box sx={{ p: 1 }}>
-      <Typography variant="h6" gutterBottom>
+    <Box sx={{ p: 2 }}>
+      <Typography variant="h6" fontWeight="bold" gutterBottom>
         Photos of {userName}
       </Typography>
+      <Divider sx={{ mb: 2 }} />
       {photos.map((photo) => (
         <PhotoCard key={photo._id} photo={photo} />
       ))}
@@ -138,17 +124,14 @@ function UserPhotos({ setContext, advancedFeatures }) {
   );
 }
 
-/**
- * PhotoCard - Renders a single photo with its date and comments.
- */
 function PhotoCard({ photo }) {
   return (
     <Card variant="outlined" sx={{ mb: 3 }}>
       <CardMedia
         component="img"
-        image={`/images/${photo.file_name}`}
+        image={`http://localhost:3002/images/${photo.file_name}`}
         alt={photo.file_name}
-        sx={{ maxHeight: 400, objectFit: "contain", bgcolor: "#f0f0f0" }}
+        sx={{ maxHeight: 420, objectFit: "contain", bgcolor: "#f5f5f5" }}
         onError={(e) => {
           e.target.src = "https://placehold.co/600x400?text=Image+Not+Found";
         }}
@@ -158,40 +141,42 @@ function PhotoCard({ photo }) {
           {formatDate(photo.date_time)}
         </Typography>
 
-        {photo.comments && photo.comments.length > 0 ? (
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="subtitle2" gutterBottom>
-              Comments ({photo.comments.length})
+        <Box sx={{ mt: 2 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+            <ChatBubbleOutlineIcon fontSize="small" color="action" />
+            <Typography variant="subtitle2">
+              {photo.comments && photo.comments.length > 0
+                ? `${photo.comments.length} Comment${photo.comments.length > 1 ? "s" : ""}`
+                : "No comments"}
             </Typography>
-            <Divider sx={{ mb: 1 }} />
-            {photo.comments.map((c) => (
-              <Paper
-                key={c._id}
-                variant="outlined"
-                sx={{ p: 1, mb: 1, bgcolor: "#fafafa" }}
-              >
-                <Typography variant="body2">
-                  <Link
-                    to={`/users/${c.user._id}`}
-                    style={{ fontWeight: "bold", textDecoration: "none", color: "#1976d2" }}
-                  >
-                    {c.user.first_name} {c.user.last_name}
-                  </Link>
-                  <span style={{ color: "#888", fontSize: "0.8em", marginLeft: 8 }}>
-                    {formatDate(c.date_time)}
-                  </span>
-                </Typography>
-                <Typography variant="body2" sx={{ mt: 0.5 }}>
-                  {c.comment}
-                </Typography>
-              </Paper>
-            ))}
           </Box>
-        ) : (
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-            No comments yet.
-          </Typography>
-        )}
+
+          {photo.comments && photo.comments.length > 0 && (
+            <>
+              <Divider sx={{ mb: 1 }} />
+              {photo.comments.map((c) => (
+                <Paper
+                  key={c._id}
+                  variant="outlined"
+                  sx={{ p: 1.5, mb: 1, bgcolor: "#fafafa" }}
+                >
+                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 0.5 }}>
+                    <Link
+                      to={`/users/${c.user._id}`}
+                      style={{ fontWeight: "bold", textDecoration: "none", color: "#1976d2" }}
+                    >
+                      {c.user.first_name} {c.user.last_name}
+                    </Link>
+                    <Typography variant="caption" color="text.secondary">
+                      {formatDate(c.date_time)}
+                    </Typography>
+                  </Box>
+                  <Typography variant="body2">{c.comment}</Typography>
+                </Paper>
+              ))}
+            </>
+          )}
+        </Box>
       </CardContent>
     </Card>
   );
